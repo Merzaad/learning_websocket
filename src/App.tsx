@@ -18,12 +18,15 @@ function App() {
     client.onopen = () => {
       console.log('client')
     }
+    client.onmessage = (message) => {
+      setCount(JSON.parse(message.data as string).state)
+    }
   }, [])
   return (
     <>
       <div className='card'>
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <button onClick={onTestClick}>test</button>
+        <button>count is {count}</button>
+        <button onClick={onTestClick}>+</button>
       </div>
     </>
   )

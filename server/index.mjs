@@ -11,6 +11,8 @@ const websocket = new webSocketServer({
   httpServer,
 })
 
+const connections = []
+
 const counter = () => {
   let x = 0
   return [() => x, () => x++]
@@ -20,8 +22,11 @@ const [state, increase] = counter()
 
 websocket.on('request', (request) => {
   const connection = request.accept(null, request.origin)
+  connections.push(connection)
   connection.on('message', () => {
     increase()
-    console.log(state())
+    connections.forEach((connection) => {
+      connection.sendUTF(JSON.stringify({ state: state() }))
+    })
   })
 })
